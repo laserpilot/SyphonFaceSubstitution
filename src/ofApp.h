@@ -22,6 +22,7 @@ public:
     
     ofxSyphonClient syphonInput;
     ofxSyphonClient syphonInputCam;
+    ofxSyphonServer syphonOutput;
     ofxFaceTrackerThreaded camTracker;
     ofVideoGrabber cam;
     
@@ -54,9 +55,10 @@ public:
     ofxFloatSlider    texCoordXScale;
     ofxFloatSlider    texCoordYScale;
     ofxFloatSlider    faceNoise;
-        ofxFloatSlider    faceNoiseScale;
-           ofxIntSlider    cloneStrength;
-    ofxToggle        saveImage;
+    ofxFloatSlider    faceNoiseScale;
+    ofxIntSlider    cloneStrength;
+    ofxToggle        saveImage; //automatically save an image when a new face is found - save every X seconds
+    ofxToggle        autoAdvance; //auto crossfade between images in /faces folder
     ofxToggle        syphonMaskSource; //pick if syphon or the list of faces in the folder is a mask source
 
     

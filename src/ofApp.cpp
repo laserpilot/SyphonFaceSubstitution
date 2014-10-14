@@ -33,6 +33,7 @@ void ofApp::setup() {
     cout<< "Loaded face count: " << faces.size() <<endl;
     for (int i=0; i<faces.size(); i++){
         masks.push_back(faces.getPath(i));
+        cout<<i<< " " << faces.getPath(i);
     }
     
 	currentFace = 0;
@@ -96,10 +97,11 @@ void ofApp::setup() {
     gui.add ( texCoordXScale.setup("txCoordX scale", 1, 0, 4));
     gui.add ( texCoordYScale.setup("txCoordY scale", 1, 0, 4));
     gui.add ( faceNoise.setup("Noise Speed", 0.00, 0, 0.2));
-        gui.add ( faceNoiseScale.setup("Noise_scale", 40, 0, 300));
-       gui.add ( cloneStrength.setup("Clone Strength", 16, 0, 30));
+    gui.add ( faceNoiseScale.setup("Noise_scale", 40, 0, 300));
+    gui.add ( cloneStrength.setup("Clone Strength", 16, 0, 30));
     gui.add ( saveImage.setup("SaveImage", false));
-        gui.add ( syphonMaskSource.setup("Syphon Mask Source", true));
+        gui.add ( autoAdvance.setup("Auto Advance", true));
+    gui.add ( syphonMaskSource.setup("Syphon Mask Source", true));
     genericTime = 0;
     
     xFade = 255;
@@ -107,12 +109,14 @@ void ofApp::setup() {
     drawGui = true;
     
     
+    //SYPHONNNN
     syphonInput.setup();
     syphonInput.setApplicationName("VDMX5");
     syphonInput.setServerName("mask_layer");
     syphonInputCam.setup();
     syphonInputCam.setApplicationName("VDMX5");
     syphonInputCam.setServerName("camera_layer");
+    syphonOutput.setName("FaceSubOutput");
 }
 //------------------------------------------------------------
 void ofApp::update() {
@@ -179,19 +183,24 @@ void ofApp::update() {
 		}
 	//}
     
-    if(ofGetElapsedTimef()> genericTime+faceTimer){ //change to a new face every X seconds
-        genericTime = ofGetElapsedTimef();
-        currentFace++;
-        cout << "New Face 4 U" <<endl;
-        currentFace = currentFace%faces.size();
-        src = masks[currentFace];
-         xFade = 255;
-        //if(faces.size()!=0){
-          //  loadFace(faces.getPath(currentFace)); //grab new face
-        //}
+    //if true - automatically crossfade between images in the /faces folder
+    if(autoAdvance){
+        if(ofGetElapsedTimef()> genericTime+faceTimer){ //change to a new face every X seconds
+            genericTime = ofGetElapsedTimef();
+            currentFace++;
+            cout << "New Face 4 U" <<endl;
+            currentFace = currentFace%faces.size();
+            src = masks[currentFace];
+             xFade = 255;
+            //if(faces.size()!=0){
+              //  loadFace(faces.getPath(currentFace)); //grab new face
+            //}
+        }
+        xFade--;
+        xFade = ofClamp(xFade, 0, 255);
+    } else{
+        xFade = 0;
     }
-    xFade--;
-    xFade = ofClamp(xFade, 0, 255);
     
     //Save screenshots if there has been enough time in between and there is a face in frame
     if(ofGetElapsedTimef()>genericScreenCapTimer+screenCapTimer && camTracker.getFound() && saveImage){
@@ -231,8 +240,7 @@ void ofApp::draw() {
     
     largeFbo.draw(0, 0, ofGetWidth(), ofGetHeight());
     
-    //syphonInput.draw(0, 0, 640, 480);
-    //syphonInputCam.draw(640, 0, 640, 480);
+
     
     //For saving screenshot
     if(screenShot){
@@ -276,7 +284,10 @@ void ofApp::draw() {
         
         ofDrawBitmapString("Send Camera from VDMX5 to layer named: \"camera_layer\"",20,380);
         ofDrawBitmapString("Send Mask from VDMX5 to layer named: \"mask_layer\"",20,400);
+        ofDrawBitmapString("Show/Hide gui with 'd' key",20,420);
     }
+    
+    syphonOutput.publishScreen();
 }
 void ofApp::crossFade(){
     
