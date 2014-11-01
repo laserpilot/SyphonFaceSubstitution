@@ -195,10 +195,12 @@ void ofApp::draw() {
 
     
     if(showMaskSource){
+               syphonMask.draw(0, 0, 640, 360);
         ofDrawBitmapString("Syphon Input", 20,20);
-        syphonMask.draw(0, 0, 640, 360);
-        ofDrawBitmapString("Found Face/Saved Mask", 20,380);
+
+     
         src.draw(0,360, camSize.x/2, camSize.y/2);
+           ofDrawBitmapString("Found Face/Saved Mask", 20,380);
     }
     
     

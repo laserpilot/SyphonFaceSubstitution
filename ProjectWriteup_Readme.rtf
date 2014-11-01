@@ -1,0 +1,62 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue233;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\i\fs24 \cf0 We\'92re Live
+\i0  is a project involving live HD cable TV and face substitution software. It is a hardware and software method for doing a real time facial composite/replacement on live television. The original face substitution implementation and cloning shader was created by Kyle McDonald and Arturo Castro in 2012. The face tracking algorithm that enables this kind of high quality facial substitution was developed by Jason Saragih.\'a0\
+\
+One of television\'92s greatest powers is in its ability to display very structured and edited views of reality. By watching the fabricated streams of the shows, viewers begin to wish for the interesting, exciting and impossible lives of the characters. They can subconsciously desire the smiles and trouble free lives enabled by buying the products in the advertisements. With this software, viewers can come one step closer to truly seeing themselves on screen.\
+\
+
+\i We're Live
+\i0  allows a user to composite their face (or any face they choose) onto a live television stream. Essentially, anyone you watch on TV can finally look like you.\'a0\
+\
+\'97\'97\'97\'97\
+Technical details/process:\
+\
+The first part of the process involves actually getting the live TV into your computer so you can process it for face substitution. I have been using the following:\
+\
+-{\field{\*\fldinst{HYPERLINK "http://www.bhphotovideo.com/c/product/892453-REG/Blackmagic_Design_bdlkulsdzminrec_Ultrastudio_Mini_Recorder.html"}}{\fldrslt \cf2 \ul \ulc2 Blackmagic Mini Recorder}}\
+-{\field{\*\fldinst{HYPERLINK "http://www.amazon.com/HD-102-Powered-Splitter-Certified-Support/dp/B005HXFARS"}}{\fldrslt \cf2 \ul \ulc2 Orei 1x2 HDMI Splitter - strips HDCP}}\
+\
+-{\field{\*\fldinst{HYPERLINK "http://www.amazon.com/ViewHD-Port-Powered-Splitter-1080P/dp/B004F9LVXC/ref=cm_cr_dp_asin_lnk"}}{\fldrslt \cf2 \ul \ulc2 Alternate to the Orei Splitter}}\
+\
+The HDMI Splitter is the silver bullet for actually capturing live TV off a digital set top box. Most set top boxes and game consoles have what is called HDCP or High Definition Copy Protection which blocks you from\'85well\'85copying or recording the HD signal which is something we could potentially do with this setup. The Blackmagic \'a0Mini Recorder does not comply with HDCP, so your set top box signal will not even show up when you try to just plug it in straight. Certain HDMI splitters, (like the one listed) will comply with the HDCP handshake on their input, but ignore it for their output - these splitters effectively strip HDCP so you can do whatever you like with the signal.\
+\
+Once you have Set top box HDMI-> HDMI Splitter -> Black Magic Mini Recorder -> Thunderbolt -> Mac Computer - you can start doing some face substitution!\
+\
+Here is a ZIP of the software with an included VDMX project file for working with it.\
+\
+\pard\pardeftab720
+{\field{\*\fldinst{HYPERLINK "http://www.vidvox.net/"}}{\fldrslt \cf2 \ul \ulc2 VDMX}}\'a0is my software of choice for actually getting the captured signal from Blackmagic into the face substitution software. I have included a VDMX Project file with the software to show you how to do this all yourself. With my setup, I am able to get 1280x720 at 60hz (or 720p@59.94 according to the actual capture settings I\'92m using)\
+\
+Once I have the TV signal in VDMX, I actually pass the video texture to the face substitution software using\'a0{\field{\*\fldinst{HYPERLINK "http://syphon.v002.info/"}}{\fldrslt \cf2 \ul \ulc2 Syphon}}\'a0 Once it is in there, it is constantly searching for new faces to map the mask layer onto. You don\'92t have to use a live TV signal - you can put a movie file into VDMX onto the \'93camera layer\'94 source and use that layer to apply your masks to.\'a0\
+\
+On another layer in VDMX, you can pass in the \'93mask" you want to apply to the footage. For example - this would be your face that you pass in via webcam. To save processing time and not run 2 face trackers constantly - I actually have this capture your face on a key press - when your face is in camera - you press the \'91m\'92 key in the face sub software to set the new mask. You can put still images or movies or a live webcam into the \'93masks\'94 layer in VDMX. Alternatively - you can put a bunch of files into the \'93faces\'94 folder in the \'93data\'94 folder and use the arrow keys to cycle to different faces.\
+\
+You can press \'91d\'92 to bring up the GUI for different settings like viewing which mask is currently loaded and things like that.\
+\
+\pard\pardeftab720
+
+\b \cf0 Recording/Displaying output:\'a0
+\b0 \
+You can capture the output of the openFrameworks program in Syphon as well, and use that to go fullscreen in VDMX or something if you hide those layers. I use the Syphon Recorder to record my demos.\
+\
+\
+
+\b Note about Audio:
+\b0 \
+Currently nothing in this setup fully supports audio. You can capture audio with the Black Magic recorder and use that as your audio source in Syphon Recorder \'97 but a caveat:\
+\
+The audio is \'93ahead\'94 of the video due to input and processing steps - meaning you will hear something 6 frames (0.2s) before you see it (for example - your results may vary). To fix this - you could make an audio delay buffer in something like Max/MSP. If you are recording output with audio - you will need to re-sync it later in your editing software - I recommend a clap board or hand clap at the beginning of recordings - something recognizable for sync in video and audio.\
+\
+\
+
+\b Alternate version/Upgrade:
+\b0  There is an alternate version of the software that isn\'92t fully integrated yet into this executable/binary (but the source is available on github under the OriginalCycling branch) - which will allow you to map arbitrary textures to the live tracked face. This released current version only allows you to put a face on a face. The other version lets you put more abstract non-face things and map them onto the same area. It works by storing the mesh points of a pre-tracked face, and using those to apply an arbitrary image to the face mesh that is properly texture mapped. This alternate versions also features a way to crossfade between different faces.\
+\
+\
+}
