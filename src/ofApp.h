@@ -20,7 +20,7 @@ public:
     
     void keyPressed(int key);
     
-    ofxSyphonClient syphonInput;
+    ofxSyphonClient syphonMask;
     ofxSyphonClient syphonInputCam;
     ofxSyphonServer syphonOutput;
     ofxFaceTrackerThreaded camTracker;
@@ -36,10 +36,16 @@ public:
     Clone clone;
     ofFbo srcFbo, maskFbo;
     ofFbo largeFbo;
-    ofFbo crossfadeFbo;
+    ofFbo syphonMaskFbo;
+    
+    
+            ofImage imageCopy;
+    ofImage maskCopy;
+        ofPoint camSize;
     
     ofFbo  fboSyphonIn;
     ofPixels pix;
+        ofPixels maskPix;
     
     
     ofDirectory faces;
@@ -47,8 +53,7 @@ public:
     int xFade;
     
     ofxPanel gui;
-    ofxIntSlider    faceTimer; //auto switching/fading masks
-    ofxIntSlider    screenCapTimer;
+
     ofxIntSlider    texCoordX; //offset the mask on the mesh
     ofxIntSlider    texCoordY;
     //ofxIntSlider    xFade;
@@ -57,9 +62,8 @@ public:
     ofxFloatSlider    faceNoise;
     ofxFloatSlider    faceNoiseScale;
     ofxIntSlider    cloneStrength;
-    ofxToggle        saveImage; //automatically save an image when a new face is found - save every X seconds
-    ofxToggle        autoAdvance; //auto crossfade between images in /faces folder
-    ofxToggle        syphonMaskSource; //pick if syphon or the list of faces in the folder is a mask source
+    ofxToggle        showMaskSource; //pick if syphon or the list of faces in the folder is a mask source
+    ofxToggle        syphonMaskSource;
 
     
     bool drawGui;
