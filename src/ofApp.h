@@ -38,6 +38,9 @@ public:
     ofFbo largeFbo;
     ofFbo crossfadeFbo;
     
+            ofImage imageCopy;
+        ofPoint camSize;
+    
     ofFbo  fboSyphonIn;
     ofPixels pix;
     

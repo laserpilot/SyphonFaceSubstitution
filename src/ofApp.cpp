@@ -9,15 +9,18 @@ void ofApp::setup() {
 	ofSetVerticalSync(true);
     //ofSetFrameRate(30);
 	cloneReady = false;
-	cam.initGrabber(640, 360);
-	clone.setup(cam.getWidth(), cam.getHeight());
+
+    camSize.x = 1280;
+    camSize.y = 720;
+	cam.initGrabber(1280, 720);
+	clone.setup(camSize.x, camSize.y);
 	ofFbo::Settings settings;
-	settings.width = cam.getWidth();
-	settings.height = cam.getHeight();
+	settings.width = camSize.x;
+	settings.height = camSize.y;
 	maskFbo.allocate(settings);
 	srcFbo.allocate(settings);
     
-    largeFbo.allocate(640,360);
+    largeFbo.allocate(camSize.x,camSize.y);
     crossfadeFbo.allocate(500, 500, GL_RGBA);
 	camTracker.setup();
 	srcTracker.setup();
@@ -47,10 +50,8 @@ void ofApp::setup() {
     srcFbo.end();
     
     //FBO 
-    ofPoint camSize;
-    camSize.x = 640;
-    camSize.y = 480;
-    fboSyphonIn.allocate(camSize.x, camSize.y, GL_RGB);
+
+    fboSyphonIn.allocate(camSize.x, camSize.y, GL_RGB); //make this halfsize so the processing is easier for the face tracker...
    // fboSyphonOut.allocate(camSize.x, camSize.y, GL_RGB);
     
     pix.allocate(camSize.x, camSize.y, 3);
@@ -135,7 +136,7 @@ void ofApp::update() {
     
     
     
-        ofImage imageCopy;
+
         imageCopy.setFromPixels(pix);
     
         //pass fbo of syphon feed into face tracker - ofSyphon doesn't currently have a way to frame sync (no syphon.getframenew), so you may end up with missing frames or other glitches with using the tracker
@@ -218,7 +219,15 @@ void ofApp::draw() {
     ofSetColor(255);
     fboSyphonIn.begin();    //start capturing your FBO
     ofClear(0,0,0,0);       //clear it
+    ofPushMatrix();
+    ofPushStyle();
+    
+    //ofSetRectMode(OF_RECTMODE_CENTER);
+    //ofTranslate(camSize.x, camSize.y);
+    //ofScale(0.5, 0.5);
     syphonInputCam.draw(0,0);  //draw the incompatible syphon texture to an FBO. Syphon texture cannot be used with read to pixels because it is a different texture type than ofTexture's internal type
+    ofPopStyle();
+    ofPopMatrix();
     fboSyphonIn.end();                      
     
     //2. Take that FBO reference image (ie the image input) and copy it to some pixels
@@ -239,7 +248,7 @@ void ofApp::draw() {
     largeFbo.end();
     
     largeFbo.draw(0, 0, ofGetWidth(), ofGetHeight());
-    
+    //imageCopy.draw(0,0, 640,360);
 
     
     //For saving screenshot
