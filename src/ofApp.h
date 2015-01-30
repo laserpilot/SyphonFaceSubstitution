@@ -64,6 +64,10 @@ public:
     ofxIntSlider    cloneStrength;
     ofxToggle        showMaskSource; //pick if syphon or the list of faces in the folder is a mask source
     ofxToggle        syphonMaskSource;
+    ofxToggle        enableSyphonOut;
+    ofxToggle        autoUpdateMask;
+    ofxIntSlider    updateMaskTime;
+    float timer;
 
     
     bool drawGui;

@@ -12,8 +12,8 @@ void ofApp::setup() {
 	cloneReady = false;
 
     //runs a little slower at 720p - you can drop this whole thing down to 640x360 for faster results
-    camSize.x = 1280;
-    camSize.y = 720;
+    camSize.x = 640;
+    camSize.y = 360;
 	
 	clone.setup(camSize.x, camSize.y);
 	ofFbo::Settings settings;
@@ -30,7 +30,6 @@ void ofApp::setup() {
 	srcTracker.setup();
 	srcTracker.setIterations(25);
 	srcTracker.setAttempts(4);
-    
 
 	//faces.allowExt("jpg");
 	//faces.allowExt("png");
@@ -79,6 +78,10 @@ void ofApp::setup() {
     gui.add ( cloneStrength.setup("Clone Strength", 16, 0, 30));
     gui.add ( showMaskSource.setup("Show Mask Source", false));
     gui.add ( syphonMaskSource.setup("Syphon Mask Source", false));
+    gui.add ( enableSyphonOut.setup("Enable Syphon Out", false));
+    gui.add ( autoUpdateMask.setup("Auto Update Mask", false));
+    gui.add ( updateMaskTime.setup("Update Mask every X sec", 10,1, 100));
+    
     
     
     genericTime = 0;
@@ -223,7 +226,30 @@ void ofApp::draw() {
         ofDrawBitmapString("Reload mask layer with 'm'",20,440);
     }
     
+    if(enableSyphonOut){
+    
         syphonOutput.publishTexture(&largeFbo.getTextureReference()); //putting this syphon bit before GUI draw seems to break GUI...
+    }
+    
+    if (autoUpdateMask && (timer+updateMaskTime)<ofGetElapsedTimef()) {
+        
+        timer= ofGetElapsedTimef();
+        maskCopy.setFromPixels(maskPix);
+        src = maskCopy;
+        if(src.getWidth() > 0 && src.isAllocated()) {
+            srcTracker.update(toCv(src)); //convert source image to opencv acceptable format
+            if(srcTracker.getFound()){
+                srcPoints = srcTracker.getImagePoints(); //load the vector of points that are returned from the tracker as the proper face points
+                //srcMesh = srcTracker.getImageMesh();
+                //cout<<"Face Found"<<endl;
+            }
+            else{
+                srcPoints = inputSrcPoints;
+                //cout<<"Face NOT Found"<<endl;
+            }
+        }
+
+    }
 
 }
 
